@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Продвинутый Гласморфизм v3</title>
+  <title>Точное воссоздание с яркими бликами</title>
   <style>
     body {
       margin: 0;
@@ -12,65 +12,65 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      /* ИЗМЕНЕНИЕ: Возвращаем ваш фон */
       background-color: rgba(116, 117, 108, 1);
     }
 
-    /* --- ВНЕШНИЙ КОНТЕЙНЕР --- */
-    .glass-border-wrapper {
-      width: 280px;
-      height: 280px;
+    .glass {
+      /* --- ИЗМЕНЕНИЯ --- */
+      width: 160px;
+      height: 160px;
 
-      /* ИЗМЕНЕНИЕ: Устанавливаем радиус скругления 40px */
+      /* --- СТАРЫЕ СВОЙСТВА --- */
+      position: relative;
+      z-index: 1;
       border-radius: 40px;
 
-      padding: 1px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
-      background: conic-gradient(from 180deg at 50% 50%,
-          rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 0.6) 25%,
-          rgba(255, 255, 255, 0.3) 50%,
-          rgba(255, 255, 255, 0.4) 75%,
-          rgba(255, 255, 255, 0) 100%);
-    }
+      background: radial-gradient(ellipse farthest-corner at bottom right, rgba(69, 58, 46, 0.3), rgba(19, 41, 46, 0.5));
 
-    /* --- ВНУТРЕННИЙ КОНТЕЙНЕР --- */
-    .glass-container {
-      width: 100%;
-      height: 100%;
-
-      /* ИЗМЕНЕНИЕ: Радиус 39px, чтобы идеально вписаться в рамку 40px с padding: 1px */
-      border-radius: 39px;
-
-      backdrop-filter: blur(60px);
       -webkit-backdrop-filter: blur(60px);
-
-      /* 
-               ИЗМЕНЕНИЕ: Увеличиваем непрозрачность (последнее число в rgba)
-               чтобы сделать контейнер темнее.
-               Было: rgba(..., 0.3) и rgba(..., 0.5)
-               Стало: rgba(..., 0.5) и rgba(..., 0.7)
-            */
-      background: radial-gradient(circle at 100% 100%,
-          rgba(69, 58, 46, 0.5) 0%,
-          rgba(19, 41, 46, 0.7) 90%);
+      backdrop-filter: blur(60px);
 
       box-shadow:
         inset -4px -4px 16px 0 rgba(255, 249, 227, 0.15),
         inset 4px 4px 16px 0 rgba(12, 18, 20, 0.1),
         inset 1px 1px 2px 0 rgba(255, 255, 255, 0.5);
 
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      /* Свойство padding: 20px; было убрано по вашему запросу. */
+    }
+
+    .glass::before {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      border-radius: 40px;
+      padding: 1px;
+
+      background: conic-gradient(from 0deg,
+          rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.32),
+          rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.16),
+          rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.6),
+          rgba(255, 255, 255, 0), rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1),
+          rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+
+      box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.25);
+
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="glass-border-wrapper">
-    <div class="glass-container">
-    </div>
+  <div class="glass">
+
   </div>
 
 </body>
