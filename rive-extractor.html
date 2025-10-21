@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rive to Sprite Converter</title>
+    <script src="https://unpkg.com/@rive-app/canvas@2.7.0/rive.js"></script>
+</head>
+<body>
+    <div>
+        <input type="file" id="riveFile" accept=".riv">
+        <button onclick="convertToSprite()">Конвертировать в спрайт</button>
+        <br><br>
+        <label>Ширина кадра: <input type="number" id="frameWidth" value="256"></label>
+        <label>Высота кадра: <input type="number" id="frameHeight" value="256"></label>
+        <label>Колонки: <input type="number" id="columns" value="10"></label>
+        <label>FPS: <input type="number" id="frameRate" value="30"></label>
+    </div>
+    
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="progress"></div>
+    <img id="result" style="max-width: 100%; margin-top: 20px;">
+
+    <script>
+        async function convertToSprite() {
+            const fileInput = document.getElementById('riveFile');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const progressDiv = document.getElementById('progress');
+            const resultImg = document.getElementById('result');
+            
+            if (!fileInput.files[0]) {
+                alert('Выберите .riv файл');
+                return;
+            }
+            
+            const frameWidth = parseInt(document.getElementById('frameWidth').value);
+            const frameHeight = parseInt(document.getElementById('frameHeight').value);
+            const columns = parseInt(document.getElementById('columns').value);
+            const frameRate = parseInt(document.getElementById('frameRate').value);
+            
+            try {
+                // Читаем файл
+                const arrayBuffer = await fileInput.files[0].arrayBuffer();
+                const bytes = new Uint8Array(arrayBuffer);
+                
+                // Создаем Rive инстанс
+                const rive = new rive.Rive({
+                    buffer: bytes,
+                    canvas: canvas,
+                    layout: new rive.Layout({
+                        fit: rive.Fit.Contain,
+                        alignment: rive.Alignment.Center
+                    }),
+                    autoplay: false,
+                    onLoad: () => processAnimation(rive, frameWidth, frameHeight, columns, frameRate, progressDiv, resultImg)
+                });
+                
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка при обработке файла');
+            }
+        }
+        
+        function processAnimation(riveInstance, frameWidth, frameHeight, columns, frameRate, progressDiv, resultImg) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = frameWidth;
+            canvas.height = frameHeight;
+            
+            // Получаем длительность анимации
+            const duration = riveInstance.duration;
+            const totalFrames = Math.ceil(duration * frameRate);
+            const timeStep = duration / totalFrames;
+            
+            console.log(`Длительность: ${duration}s, Кадров: ${totalFrames}`);
+            
+            // Создаем canvas для спрайт-листа
+            const rows = Math.ceil(totalFrames / columns);
+            const spriteCanvas = document.createElement('canvas');
+            spriteCanvas.width = columns * frameWidth;
+            spriteCanvas.height = rows * frameHeight;
+            const spriteCtx = spriteCanvas.getContext('2d');
+            
+            let currentFrame = 0;
+            
+            function renderFrame() {
+                if (currentFrame >= totalFrames) {
+                    // Завершено
+                    const dataURL = spriteCanvas.toDataURL('image/png');
+                    resultImg.src = dataURL;
+                    
+                    // Создаем ссылку для скачивания
+                    const link = document.createElement('a');
+                    link.download = 'sprite-sheet.png';
+                    link.href = dataURL;
+                    link.click();
+                    
+                    progressDiv.innerHTML = 'Готово! Спрайт-лист создан.';
+                    
+                    // Генерируем JSON с метаданными
+                    const metadata = {
+                        frameWidth,
+                        frameHeight,
+                        totalFrames,
+                        columns,
+                        rows,
+                        frameRate,
+                        duration,
+                        spriteWidth: spriteCanvas.width,
+                        spriteHeight: spriteCanvas.height
+                    };
+                    
+                    const metadataBlob = new Blob([JSON.stringify(metadata, null, 2)], {type: 'application/json'});
+                    const metadataLink = document.createElement('a');
+                    metadataLink.download = 'sprite-metadata.json';
+                    metadataLink.href = URL.createObjectURL(metadataBlob);
+                    metadataLink.click();
+                    
+                    return;
+                }
+                
+                const currentTime = currentFrame * timeStep;
+                
+                // Устанавливаем время
+                riveInstance.time = currentTime;
+                
+                // Очищаем canvas
+                ctx.clearRect(0, 0, frameWidth, frameHeight);
+                
+                // Рендерим кадр
+                riveInstance.draw(ctx);
+                
+                // Копируем в спрайт-лист
+                const col = currentFrame % columns;
+                const row = Math.floor(currentFrame / columns);
+                const x = col * frameWidth;
+                const y = row * frameHeight;
+                
+                spriteCtx.drawImage(canvas, x, y);
+                
+                progressDiv.innerHTML = `Обработано кадров: ${currentFrame + 1}/${totalFrames}`;
+                
+                currentFrame++;
+                
+                // Продолжаем рендеринг в следующем кадре
+                requestAnimationFrame(renderFrame);
+            }
+            
+            renderFrame();
+        }
+    </script>
+</body>
+</html>
