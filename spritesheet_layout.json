@@ -3,7 +3,7 @@
   "frameHeight": 115,
   "columns": 18,
   "rows": 18,
-  "totalFrames": 321,
+  "totalFrames": 320,
   "sheetWidth": 2070,
   "sheetHeight": 2070,
   "frames": [
@@ -2563,14 +2563,6 @@
       "index": 319,
       "fileName": "frame_1910.png",
       "x": 1495,
-      "y": 1955,
-      "width": 115,
-      "height": 115
-    },
-    {
-      "index": 320,
-      "fileName": "frame_1911.png",
-      "x": 1610,
       "y": 1955,
       "width": 115,
       "height": 115
