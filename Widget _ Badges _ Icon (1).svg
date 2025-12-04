@@ -1,0 +1,19 @@
+<svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="52.000000" height="52.000000" fill="none">
+	<defs>
+		<clipPath id="clipPath_0">
+			<rect width="20.000000" height="20.000000" x="16.000000" y="16.000000" fill="rgb(255,255,255)" />
+		</clipPath>
+		<clipPath id="clipPath_1">
+			<rect width="20.000000" height="20.000000" x="16.000000" y="16.000000" fill="rgb(255,255,255)" />
+		</clipPath>
+	</defs>
+	<rect id="Widget / Badges / Icon" width="52.000000" height="52.000000" x="0.000000" y="0.000000" />
+	<circle id="Fill" cx="26" cy="26" r="26" opacity="0.100000001" fill="rgb(49,194,167)" />
+	<g id="Icons / Sparkle" clip-path="url(#clipPath_0)" customFrame="url(#clipPath_0)">
+		<rect id="Icons / Sparkle" width="20.000000" height="20.000000" x="16.000000" y="16.000000" />
+		<g id="Icons / Point" clip-path="url(#clipPath_1)" customFrame="url(#clipPath_1)">
+			<rect id="Icons / Point" width="20.000000" height="20.000000" x="16.000000" y="16.000000" />
+			<path id="Star 2" d="M26 17C27.2659 21.3403 30.6597 24.7341 35 26C30.6597 27.2659 27.2659 30.6597 26 35C24.7341 30.6597 21.3403 27.2659 17 26C21.3403 24.7341 24.7341 21.3403 26 17Z" fill="rgb(49,194,167)" fill-rule="evenodd" />
+		</g>
+	</g>
+</svg>
